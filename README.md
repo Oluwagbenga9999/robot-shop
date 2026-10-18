@@ -126,3 +126,7 @@ $ curl http://<host>:8080/api/cart/metrics
 $ curl http://<host>:8080/api/payment/metrics
 ```
 
+
+## Rollback evidence
+
+A bad release (image tag that does not exist) was deployed on purpose, the new pods failed with `ImagePullBackOff` while the old pods kept serving, and `helm rollback` restored the last good revision. The recorded output is in [docs/rollback-evidence.txt](docs/rollback-evidence.txt).
