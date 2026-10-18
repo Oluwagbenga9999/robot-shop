@@ -17,17 +17,40 @@ spec:
       {{ if .Values.psp.enabled }}
       serviceAccountName: robot-shop
       {{ end }}
+      initContainers:
+      - name: otel-agent
+        image: ghcr.io/open-telemetry/opentelemetry-operator/autoinstrumentation-java:2.32.0
+        command: ["cp", "/javaagent.jar", "/otel/javaagent.jar"]
+        volumeMounts:
+        - name: otel
+          mountPath: /otel
       containers:
       - name: shipping
         image: {{ .Values.image.repo }}/rs-shipping:{{ .Values.image.version }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+        - name: JAVA_TOOL_OPTIONS
+          value: "-javaagent:/otel/javaagent.jar"
+        - name: OTEL_SERVICE_NAME
+          value: shipping
+        - name: OTEL_EXPORTER_OTLP_ENDPOINT
+          value: http://otel-collector.tracing.svc:4318
+        - name: OTEL_EXPORTER_OTLP_PROTOCOL
+          value: http/protobuf
+        - name: OTEL_METRICS_EXPORTER
+          value: none
+        - name: OTEL_LOGS_EXPORTER
+          value: none
+        volumeMounts:
+        - name: otel
+          mountPath: /otel
         ports:
         - containerPort: 8080
         # it's Java it needs lots of memory
         resources:
           limits:
             cpu: 1000m
-            memory: 1000Mi
+            memory: 1500Mi
           requests:
             cpu: 100m
             memory: 500Mi
@@ -41,6 +64,9 @@ spec:
           failureThreshold: 30
           successThreshold: 1
       restartPolicy: Always
+      volumes:
+      - name: otel
+        emptyDir: {}
       {{- with .Values.shipping.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
