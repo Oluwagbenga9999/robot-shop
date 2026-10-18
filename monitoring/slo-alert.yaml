@@ -1,0 +1,17 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: robot-shop-slo
+  namespace: monitoring
+spec:
+  groups:
+    - name: robot-shop-availability
+      rules:
+        - alert: RobotShopAvailabilityLow
+          expr: avg_over_time(probe_success{job="robot-shop-probe"}[5m]) < 0.9
+          for: 1m
+          labels:
+            severity: page
+          annotations:
+            summary: "{{ $labels.instance }} has been failing checks: success rate is {{ $value | humanizePercentage }} over 5m (SLO is 99%)"
+            runbook_url: https://github.com/Oluwagbenga9999/robot-shop/blob/master/monitoring/runbook-availability.md

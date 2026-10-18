@@ -1,0 +1,27 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: slack
+  namespace: monitoring
+spec:
+  route:
+    receiver: slack
+    groupBy: ["alertname", "instance"]
+    groupWait: 30s
+    groupInterval: 1m
+    repeatInterval: 1h
+    matchers:
+      - name: severity
+        value: page
+  receivers:
+    - name: slack
+      slackConfigs:
+        - apiURL:
+            name: slack-webhook
+            key: url
+          sendResolved: true
+          title: '{{ .CommonLabels.alertname }}: {{ .Status }}'
+          text: |-
+            {{ range .Alerts }}{{ .Annotations.summary }}
+            Runbook: {{ .Annotations.runbook_url }}
+            {{ end }}
