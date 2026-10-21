@@ -7,7 +7,7 @@ During a self-run incident drill on 18 October 2026, the cart service was scaled
 
 ## Impact
 - Services affected: cart only. Web, catalogue and payment kept passing their checks.
-- Duration: from about 07:38 until 07:49.
+- Duration: from about 07:38 until 07:42.
 - Customers could not add items to the cart or view it during that time.
 
 ## Timeline (local time, taken from Slack)
@@ -15,7 +15,7 @@ During a self-run incident drill on 18 October 2026, the cart service was scaled
 |---|---|
 | 07:38 | Cart scaled to 0 replicas with `kubectl scale deploy/cart -n robot-shop --replicas=0` |
 | 07:40 | Alert RobotShopAvailabilityLow fires in Slack for the cart health check. Success rate shown: 60% |
-| 07:49 | Runbook opened from the Slack message and followed: step 4, scale the service back to 1 |
+| 07:41 | Runbook opened from the Slack message and followed: step 4, scale the service back to 1 |
 | 07:42 | Cart running again, health checks pass |
 | 07:46 | Alert resolves in Slack |
 

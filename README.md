@@ -1,3 +1,20 @@
+# Robot Shop: monitoring and incident response (Capstone 2)
+
+Forked from [instana/robot-shop](https://github.com/instana/robot-shop). The application code is theirs. My work is the observability and reliability layer on top of it:
+
+- `monitoring/`: Prometheus, Alertmanager and Grafana, blackbox probes, Loki and Fluent Bit for logs, Jaeger and OpenTelemetry for traces
+- `monitoring/slo.md`: a 99% availability SLO with an error budget and policy
+- `monitoring/slo-alert.yaml` and `monitoring/alertmanager-slack.yaml`: the alert and its Slack routing
+- `monitoring/runbook-availability.md`: what to do when the alert fires
+- `monitoring/postmortem-cart-outage.md`: a blameless postmortem from a planned incident drill
+- `K8s/helm/`: Helm chart changes so the shop runs on my cluster
+
+See [`monitoring/README.md`](monitoring/README.md) for how to open Grafana and Jaeger.
+
+---
+
+# Original README (upstream)
+
 # Sample Microservice Application
 
 Stan's Robot Shop is a sample microservice application you can use as a sandbox to test and learn containerised application orchestration and monitoring techniques. It is not intended to be a comprehensive reference example of how to write a microservices application, although you will better understand some of those concepts by playing with Stan's Robot Shop. To be clear, the error handling is patchy and there is not any security built into the application.
